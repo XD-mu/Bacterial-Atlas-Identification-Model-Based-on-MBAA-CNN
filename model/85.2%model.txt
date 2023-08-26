@@ -1,0 +1,16 @@
+        model = Sequential()
+        model.add(Conv1D(256, 3, activation='relu', input_shape=input_shape, kernel_regularizer=l1(0.01)))
+        model.add(Dropout(0.01))  # 预防过拟合
+        model.add(MaxPooling1D(pool_size=2))
+        
+        model.add(Conv1D(256, 3, activation='relu', input_shape=input_shape, kernel_regularizer=l1(0.01)))
+        model.add(Dropout(0.05))  # 预防过拟合
+        model.add(MaxPooling1D(pool_size=2))
+              
+        model.add(Flatten())
+        ######################################
+        model.add(Dense(256, activation='relu',kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
+        model.add(Dropout(0.01)) #预防过拟合
+        model.add(Dense(128, activation='relu',kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
+        model.add(Dropout(0.01)) #预防过拟合
+        model.add(Dense(num_classes, activation='softmax'))
