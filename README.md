@@ -47,7 +47,7 @@
 
 ##### 1.训练准确率变化情况
 
-<img src="C:\Users\m\Desktop\Bacterial-Atlas-Identification-Model-Based-on-AM-CNN\img\训练准确率+评估准确率.png" alt="训练准确率+评估准确率" style="zoom: 33%;" />
+<img src="./img/训练准确率+评估准确率.png" alt="训练准确率+评估准确率" style="zoom: 33%;" />
 
 准确率变化较为理想，满足预期要求：
 
@@ -62,33 +62,33 @@
 
 ##### 2.训练LOSS值变化情况
 
-<img src="C:\Users\m\Desktop\Bacterial-Atlas-Identification-Model-Based-on-AM-CNN\img\1LOSS.png" alt="1LOSS" style="zoom: 67%;" />
+<img src="./img/1LOSS.png" alt="1LOSS" style="zoom: 67%;" />
 
 ##### 3.模型分别对于n种细菌数据各自分类情况
 
-<img src="C:\Users\m\Desktop\Bacterial-Atlas-Identification-Model-Based-on-AM-CNN\img\98.833%四种细菌分类情况Process.png" alt="98.833%四种细菌分类情况Process" style="zoom: 33%;" />
+<img src="./img/98.833%四种细菌分类情况Process.png" alt="98.833%四种细菌分类情况Process" style="zoom: 33%;" />
 
-<img src="C:\Users\m\Desktop\Bacterial-Atlas-Identification-Model-Based-on-AM-CNN\img\98.75%分类情况process.png" alt="98.75%分类情况process" style="zoom: 40%;" />
+<img src="./img/98.75%分类情况process.png" alt="98.75%分类情况process" style="zoom: 40%;" />
 
 ##### 4.十种细菌同时分类情况
 
 **（1）.未标注**
 
-<img src="C:\Users\m\Desktop\Bacterial-Atlas-Identification-Model-Based-on-AM-CNN\img\FREE.png" alt="FREE" style="zoom:67%;" />
+<img src="./img/FREE.png" alt="FREE" style="zoom:67%;" />
 
 **（2）.标注**
 
-<img src="C:\Users\m\Desktop\Bacterial-Atlas-Identification-Model-Based-on-AM-CNN\img\LABEL.png" alt="LABEL" style="zoom:67%;" />
+<img src="./img/LABEL.png" alt="LABEL" style="zoom:67%;" />
 
 ##### 5.模型对于测试集的验证情况
 
-<img src="C:\Users\m\Desktop\Bacterial-Atlas-Identification-Model-Based-on-AM-CNN\img\all_bacteria_heatmap.png" alt="all_bacteria_heatmap" style="zoom:72%;" />
+<img src="./img/all_bacteria_heatmap.png" alt="all_bacteria_heatmap" style="zoom:72%;" />
 
 ##### 6.模型六种细菌的ROC变化情况
 
-<img src="C:\Users\m\Desktop\Bacterial-Atlas-Identification-Model-Based-on-AM-CNN\img\ROC.png" alt="ROC" style="zoom:150%;" />
+<img src="./img/ROC.png" alt="ROC" style="zoom:150%;" />
 
-<img src="C:\Users\m\Desktop\Bacterial-Atlas-Identification-Model-Based-on-AM-CNN\img\PR.png" alt="PR" style="zoom:150%;" />
+<img src="./img/PR.png" alt="PR" style="zoom:150%;" />
 
 ```
 	ROC曲线可以帮助我们了解分类器在不同阈值下的表现情况，以及在不同的分类阈值下分类器的敏感性和特异性。曲线的横坐标是假正率（False Positive Rate）即被错误地分为正类的样本占所有负样本的比例，曲线的纵坐标是真正率（True Positive Rate）即被正确地分为正类的样本占所有正样本的比例，曲线越接近左上角，说明分类器的表现越好。
@@ -98,7 +98,7 @@
 
 ### 1.2.3与经典网络相比的准确率提升程度
 
-![compare](C:\Users\m\Desktop\Bacterial-Atlas-Identification-Model-Based-on-AM-CNN\img\compare.png)
+![compare](./img/compare.png)
 
 | Method | 未标注 | 标注  |
 | ------ | ------ | ----- |
@@ -111,7 +111,7 @@
 
 
 
-![performence](C:\Users\m\Desktop\Bacterial-Atlas-Identification-Model-Based-on-AM-CNN\img\performence.png)
+![performence](./img/performence.png)
 
 ## 2.创新点
 
