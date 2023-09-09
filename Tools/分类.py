@@ -83,7 +83,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 from sklearn.cluster import KMeans
-
+import os
+os.environ['OMP_NUM_THREADS'] = '12'
 matplotlib.rcParams['axes.unicode_minus'] = False
 #支持中文
 mpl.rcParams['font.sans-serif'] = ['SimHei']
@@ -108,19 +109,19 @@ for i, xy in enumerate(data):
     x, y = xy[:, 0], xy[:, 1]
     plt.scatter(x, y, s=area, c=colors[i], alpha=0.4, label=label[i])
 
-plt.xlim(0, 17)  # 调整横坐标轴显示范围
-plt.ylim(0, 17)  # 调整纵坐标轴显示范围
+plt.xlim(-2, 19)  # 调整横坐标轴显示范围
+plt.ylim(-2, 19)  # 调整纵坐标轴显示范围
 
 data = np.vstack(data)
-kmeans = KMeans(n_clusters=10)
+kmeans = KMeans(n_clusters=10, n_init=10)  # 明确设置n_init参数
 kmeans.fit(data)
 labels = kmeans.labels_
 
 for i in range(10):
     cluster_data = data[labels == i]
-    plt.scatter(cluster_data[:, 0], cluster_data[:, 1], s=area, c=colors[i], alpha=0.89)
+    plt.scatter(cluster_data[:, 0], cluster_data[:, 1], s=area, c=colors[i], alpha=0.705)
 
-plt.legend()
-plt.title(f'标注分离率：98.176%')
+plt.legend(loc="upper right");
+plt.title(f'标注分离率：73.500%')
 plt.show()
 
