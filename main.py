@@ -1,29 +1,150 @@
 import os
 import numpy as np
-from keras.models import load_model
-from sklearn.model_selection import train_test_split
-from matplotlib.font_manager import FontProperties
 import matplotlib.pyplot as plt
+from matplotlib.font_manager import FontProperties
+
+from pylab import *
+import random
+import matplotlib
+
+from keras.models import Sequential
+from keras.layers import Conv1D, MaxPooling1D, Flatten, Dense, Dropout, LSTM
+from keras.regularizers import l1, l2
+from keras.layers import BatchNormalization
+from keras.layers import *
+from tensorflow.keras.optimizers import Adagrad
+from keras.callbacks import ModelCheckpoint, EarlyStopping
+from sklearn.model_selection import train_test_split, StratifiedKFold
+from keras.models import load_model, Model, Sequential
+from tensorflow.keras import backend as K
+from keras.regularizers import l1, l2
 from pretty_confusion_matrix import pp_matrix_from_data
 from sklearn.metrics import roc_curve, auc
 from itertools import cycle
+from sklearn.utils import compute_sample_weight
+from tensorflow.keras.utils import to_categorical
+from keras.activations import softmax
 from sklearn.metrics import precision_recall_curve, average_precision_score
-#字体路径根据你的系统来调整
-font = FontProperties(fname='./font/songti.ttf', size=12)
-plt.rcParams['font.sans-serif'] = [font.get_name()]
-plt.rcParams['axes.unicode_minus'] = False
+
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
+matplotlib.rcParams['axes.unicode_minus'] = False
+# 支持中文
+mpl.rcParams['font.sans-serif'] = ['SimHei']
 
 # 设置文件夹目录
-train_dir = './Final_Data/train'  # 训练数据文件夹
-test_dir = './Final_Data/test'  # 测试数据文件夹
+train_dir = './Final_Data2/train'  # 训练数据文件夹
+test_dir = './Final_Data2/test'  # 测试数据文件夹
 model_dir = './model'  # 模型保存文件夹
-batch_size=1
-#自动获取所有的细菌标签
-origin_folder_path='./Origin_Data'
-labels=[]
+
+# 自动获取所有的细菌标签
+origin_folder_path = './Origin_Data2'
+labels = []
 
 
-# 加载测试数据函数
+# def lr_schedule(epoch):
+#     """
+#     自定义学习率回调函数
+#     """
+#     lr = 0.0005 # 初始学习率
+#     if epoch > 6:
+#         lr *= 0.1  # 在第 6 个 epoch 后将学习率减半
+#     else:
+#         return lr
+#     return lr
+
+# 自定义一个学习率回调函数
+def lr_schedule(epoch, lr):
+    initial_lr = 0.005  # 初始学习率
+    decay_factor = 0.1  # 学习率衰减因子
+    decay_epochs = 20  # 学习率每隔几个epoch衰减一次
+    min_lr = 0.0001  # 最小学习率
+
+    if epoch > 0 and epoch % decay_epochs == 0:
+        new_lr = lr * decay_factor  # 学习率衰减
+        new_lr = max(new_lr, min_lr)  # 学习率不低于最小值
+        print(f'Learning rate decayed. New learning rate: {new_lr:.6f}')
+        return new_lr
+    else:
+        return lr
+
+
+# 保存照片
+def save_plot(directory, filename):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    plt.savefig(os.path.join(directory, filename))
+
+
+################################################
+# 超参数设置
+batch_size = 1
+min_ndim = 2
+num_epochs = 1300
+
+
+#################################################
+# 定义卷积神经网络模型函数,l1(0.01)和l2(0.01)分别表示L1和L2正则化项的权重，可以根据需要调整。这样定义的模型在训练过程中，损失函数会自动加入正则化项，从而惩罚模型的复杂度。
+def create_model(input_shape):
+    # if any([os.path.isfile(os.path.join(model_dir, item)) for item in os.listdir(model_dir)]):
+    try:
+        model = load_model('./model/best_model.h5')
+        return model
+    except Exception as e:
+        model = Sequential()
+
+        #         # 第一层卷积
+        #         model.add(Conv1D(256, 3, activation='relu', input_shape=input_shape, kernel_regularizer=l1(0.01)))
+        #         model.add(BatchNormalization())
+        #         model.add(Dropout(0.01))  # 更高的Dropout率
+        #         model.add(MaxPooling1D(pool_size=2))
+
+        #         # 第二层卷积
+        #         model.add(Conv1D(128, 3, activation='relu', kernel_regularizer=l1(0.01)))
+        #         model.add(BatchNormalization())
+        #         model.add(Dropout(0.01))  # 更高的Dropout率
+        #         model.add(MaxPooling1D(pool_size=2))
+
+        #         model.add(Flatten())
+
+        #         # 第一层全连接
+        #         model.add(Dense(256, activation='relu',kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
+        #         model.add(BatchNormalization())
+        #         model.add(Dropout(0.05))  # 更高的Dropout率
+
+        #         # 第二层全连接
+        #         model.add(Dense(128, activation='relu',kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
+        #         model.add(BatchNormalization())
+        #         model.add(Dropout(0.05))  # 更高的Dropout率
+
+        #         model.add(Dense(num_classes, activation='softmax'))
+
+        #############################################
+        model = Sequential()
+        model.add(Conv1D(512, 3, activation='relu', input_shape=input_shape, kernel_regularizer=l1(0.01)))
+        model.add(Dropout(0.1))  # 预防过拟合
+        model.add(MaxPooling1D(pool_size=2))
+        model.add(Conv1D(256, 3, activation='relu', input_shape=input_shape, kernel_regularizer=l1(0.02)))
+        model.add(Dropout(0.1))  # 预防过拟合
+        model.add(MaxPooling1D(pool_size=2))
+
+        model.add(Conv1D(256, 3, activation='relu', input_shape=input_shape, kernel_regularizer=l1(0.01)))
+        model.add(Dropout(0.1))  # 预防过拟合
+        model.add(MaxPooling1D(pool_size=2))
+
+        model.add(Flatten())
+        ######################################
+        model.add(Dense(256, activation='relu', kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
+        model.add(Dropout(0.15))  # 预防过拟合
+        model.add(Dense(128, activation='relu', kernel_regularizer=l2(0.02), bias_regularizer=l2(0.01)))
+        model.add(Dropout(0.1))  # 预防过拟合
+        model.add(Dense(128, activation='relu', kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
+        model.add(Dropout(0.1))  # 预防过拟合
+        model.add(Dense(num_classes, activation='softmax'))
+        return model
+
+
+# 加载训练数据函数
 def load_data(data_dir):
     X = []
     y = []
@@ -31,14 +152,81 @@ def load_data(data_dir):
         if filename.endswith(".txt"):
             file_path = os.path.join(data_dir, filename)
             data = np.loadtxt(file_path)
-            if data.ndim < 2:
+            if data.ndim < min_ndim:
                 data = np.expand_dims(data, axis=0)
             X.append(data)
             label = filename.split("_")[0]
             y.append(label)
     return np.array(X), np.array(y)
 
-# 遍历标签目录
+
+def plot_metrics(history, unique_labels):
+    # Set color scheme
+    colors = ['#2c7bb6', '#d7191c', '#fdae61', '#AB8C7B', '#f46d43', '#d9ef8b', '#1a9641', '#c6dbef'][
+             :len(unique_labels)]
+    # Plot accuracy
+    plt.figure(figsize=(8, 6))
+    plt.plot(history.history['accuracy'], color=colors[0], label='Train')
+    plt.plot([x + 0.0 for x in history.history['val_accuracy']], color=colors[1], linestyle='--', label='Validation')
+
+    plt.title('Model Accuracy', fontsize=16)
+    plt.ylabel('Accuracy', fontsize=14)
+    plt.xlabel('Epoch', fontsize=14)
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
+    plt.legend(fontsize=12)
+    save_plot('img', 'accuracy.png')
+    plt.show()
+
+    # Plot loss
+    plt.figure(figsize=(8, 6))
+    plt.plot(history.history['loss'], color=colors[0], label='train_loss')
+    plt.plot(history.history['val_loss'], color=colors[1], linestyle='--', label='val_loss')
+    plt.title('Model Loss', fontsize=16)
+    plt.ylabel('Loss', fontsize=14)
+    plt.xlabel('Epoch', fontsize=14)
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
+    save_plot('img', 'loss.png')
+    plt.show()
+
+    # Calculate precision and recall for each class
+    y_pred = model.predict(X_test)
+    y_pred = np.argmax(y_pred, axis=-1)
+    precision = []
+    recall = []
+    for label in unique_labels:
+        indices = np.where(y_test == label_dict[label])[0]
+        tp = np.sum(y_pred[indices] == label_dict[label])
+        fp = np.sum(y_pred[indices] != label_dict[label])
+        fn = np.sum(y_pred != label_dict[label]) - tp
+        precision.append(tp / (tp + fp))
+        recall.append(tp / (tp + fn))
+
+    # Plot precision
+    plt.figure(figsize=(8, 6))
+    plt.bar(unique_labels, precision, color=colors)
+    plt.title('Model Precision', fontsize=16)
+    plt.ylabel('Precision', fontsize=14)
+    plt.xlabel('Label', fontsize=14)
+    plt.xticks(fontsize=12, rotation=45)
+    plt.yticks(fontsize=12)
+    save_plot('img', 'precision.png')  # 保存图像
+    plt.show()
+
+    # Plot recall
+    plt.figure(figsize=(8, 6))
+    plt.bar(unique_labels, recall, color=colors)
+    plt.title('Model Recall', fontsize=16)
+    plt.ylabel('Recall', fontsize=14)
+    plt.xlabel('Label', fontsize=14)
+    plt.xticks(fontsize=12, rotation=45)
+    plt.yticks(fontsize=12)
+    save_plot('img', 'recall.png')  # 保存图像
+    plt.show()
+
+
+# 获取细菌标签
 for root, dirs, files in os.walk(origin_folder_path):
     for dir in dirs:
         # 将文件夹名称添加到标签列表中
@@ -46,6 +234,7 @@ for root, dirs, files in os.walk(origin_folder_path):
 labels = [label for label in labels if label != '.ipynb_checkpoints']
 print(labels)
 
+# 加载训练数据和测试数据
 X_train, y_train = load_data(train_dir)
 X_test, y_test = load_data(test_dir)
 #############################
@@ -55,88 +244,52 @@ label_dict = {label: i for i, label in enumerate(unique_labels)}
 y_train = np.array([label_dict[label] for label in y_train])
 y_test = np.array([label_dict[label] for label in y_test])
 num_classes = len(unique_labels)
+# print(y_train)
+# print(y_test)
+
 # 划分训练集和验证集
 X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
+# 创建模型
+input_shape = X_train[0].shape
+print('input_shape:', input_shape)
+model = create_model(input_shape)
+# 设置优化器，学习率随着训练轮次变化
+optimizer = Adagrad(learning_rate=K.get_value(lr_schedule(num_epochs, 0.005)))
+# 编译模型
+# model.compile(optimizer=optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+# 设置回调函数，保存在每个epoch中的最佳模型
+checkpoint = ModelCheckpoint(os.path.join(model_dir, 'best_model.h5'), monitor='val_loss', save_best_only=True,
+                             mode='min')
+# 模型训练
+history = model.fit(X_train, y_train, batch_size=batch_size, epochs=num_epochs, validation_data=(X_val, y_val),
+                    callbacks=[checkpoint])
+# 引入画图函数
+print(labels)
 
-# 加载模型
+plot_metrics(history, labels)
+# 加载最佳模型
 best_model_path = os.path.join(model_dir, 'best_model.h5')
-model = load_model(best_model_path)
+model.load_weights(best_model_path)
+# 在测试集上评估模型
+loss, accuracy = model.evaluate(X_test, y_test, batch_size=batch_size)
 
 # 进行预测
 y_pred = model.predict(X_test)
 y_pred_classes = np.argmax(y_pred, axis=1)
-
-loss, accuracy = model.evaluate(X_test, y_test, batch_size=batch_size)
-
-# # 展示预测结果
 # print('---------------------------------------------')
-# print('结果标签:', y_pred_classes)
-# cout = 0
-# print('------------------预测结果展示-------------------------')
+# print('结果标签:',y_pred_classes)
+# cout=0
+# # print('------------------预测结果展示-------------------------')
 # for file_name in os.listdir(test_dir):
+#     # if file_name.endswith('.txt'):
 #     predicted_label = labels[int(y_pred_classes[cout])]
 #     file_name = file_name.split('_')[0]
 #     print('True Value:{}            Predict Value : {}'.format(file_name, predicted_label))
-#     cout += 1
-# print('---------------------------------------------')
+#     cout+=1
+print('---------------------------------------------')
 print("Test Loss:", loss)
 print("Test Accuracy:", accuracy)
 
-# print(y_test)
-# print(y_pred_classes)
 cmap = "PuRd"
-pp_matrix_from_data(y_test, y_pred_classes,columns=labels,lw=accuracy,cmap=cmap)
-
-##########ROC曲线##############
-# 画ROC曲线
-# 分别绘制每个类别的ROC曲线
-fpr = dict()
-tpr = dict()
-roc_auc = dict()
-for i in range(num_classes):
-    fpr[i], tpr[i], _ = roc_curve(y_test==i, y_pred[:, i])
-    roc_auc[i] = auc(fpr[i], tpr[i])
-
-# 加颜色和标签
-colors = cycle(['b', 'g', 'r', 'c', 'm', 'y', 'k'])
-for i, color in zip(range(num_classes), colors):
-    plt.plot(fpr[i], tpr[i], color=color, lw=2,
-             label='ROC curve of {0} (area = {1:0.2f})'
-             ''.format(labels[i], roc_auc[i]))
-
-# 添加一些ROC指令
-plt.plot([0, 1], [0, 1], 'k--', lw=2)
-plt.xlim([-0.05, 1.0])
-plt.ylim([0.0, 1.05])
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('ROC Curves')
-plt.legend(loc="lower right")
-plt.show()
-
-# 计算每个类别的平均精度分数
-average_precision = dict()
-for i in range(num_classes):
-    average_precision[i] = average_precision_score(y_test == i, y_pred[:, i])
-
-# 计算每个类别的精度-召回率曲线
-precision = dict()
-recall = dict()
-for i in range(num_classes):
-    precision[i], recall[i], _ = precision_recall_curve(y_test == i, y_pred[:, i])
-
-# 绘制每个类别的精度-召回率曲线
-colors = cycle(['b', 'g', 'r', 'c', 'm', 'y', 'k'])
-for i, color in zip(range(num_classes), colors):
-    plt.plot(recall[i], precision[i], color=color, lw=2,
-             label='Precision-Recall curve of {0} (area = {1:0.2f})'
-             ''.format(labels[i], average_precision[i]))
-
-# 添加一些PR曲线指令
-plt.xlim([0.0, 1.0])
-plt.ylim([0.0, 1.05])
-plt.xlabel('Recall')
-plt.ylabel('Precision')
-plt.title('Precision-Recall Curves')
-plt.legend(loc="lower right")
-plt.show()
+pp_matrix_from_data(y_test, y_pred_classes, columns=labels, lw=accuracy, cmap=cmap)
