@@ -34,12 +34,11 @@
 
 **综合汇总图片：**
 
-![image-20230909163438257](.\image-20230909163438257.png)
-
+<img src=".\image-20230909163438257.png" alt="KNN" style="zoom:50%;" />
 （2）评估曲线
 
-![image-20230909131424820](.\image-20230909131424820.png)
 
+<img src=".\image-20230909131424820.png" alt="KNN" style="zoom:50%;" />
 **AM-CNN**在准确率-召回率曲线中表现**稳定**；
 
 同时在**N**轮训练下来
@@ -50,15 +49,15 @@
 
 ### 2.美化预测结构图（分为Label与UnLabel）
 
-![image-20230909091026674](.\image-20230909091026674.png)
 
+<img src=".\image-20230909091026674.png" alt="KNN" style="zoom:50%;" />
 
 
 做出5种细菌的测试示例：
 
 
 
-<img src="C:\Users\m\AppData\Roaming\Typora\typora-user-images\image-20230909163659828.png" alt="image-20230909163659828" style="zoom:50%;" />
+<img src=".\image-20230909163659828.png" alt="image-20230909163659828" style="zoom:50%;" />
 
 ### 3.将SVM,RNN,CNN,KNN以及本论文中的AM-CNN训练结果数据以表格的形式展示出来
 
