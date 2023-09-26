@@ -6,7 +6,7 @@ from matplotlib.font_manager import FontProperties
 from pylab import *
 import random
 import matplotlib
-
+import tensorflow as tf
 from keras.models import Sequential
 from keras.layers import Conv1D, MaxPooling1D, Flatten, Dense, Dropout, LSTM
 from keras.regularizers import l1, l2
@@ -33,25 +33,13 @@ matplotlib.rcParams['axes.unicode_minus'] = False
 mpl.rcParams['font.sans-serif'] = ['SimHei']
 
 # 设置文件夹目录
-train_dir = './Final_Data2/train'  # 训练数据文件夹
-test_dir = './Final_Data2/test'  # 测试数据文件夹
+train_dir = './Final_Data/data2/train'  # 训练数据文件夹
+test_dir = './Final_Data/data2/test'  # 测试数据文件夹
 model_dir = './model'  # 模型保存文件夹
 
 # 自动获取所有的细菌标签
-origin_folder_path = './Origin_Data2'
+origin_folder_path = './Origin_Data/data2'
 labels = []
-
-
-# def lr_schedule(epoch):
-#     """
-#     自定义学习率回调函数
-#     """
-#     lr = 0.0005 # 初始学习率
-#     if epoch > 6:
-#         lr *= 0.1  # 在第 6 个 epoch 后将学习率减半
-#     else:
-#         return lr
-#     return lr
 
 # 自定义一个学习率回调函数
 def lr_schedule(epoch, lr):
@@ -68,7 +56,6 @@ def lr_schedule(epoch, lr):
     else:
         return lr
 
-
 # 保存照片
 def save_plot(directory, filename):
     if not os.path.exists(directory):
@@ -78,9 +65,9 @@ def save_plot(directory, filename):
 
 ################################################
 # 超参数设置
-batch_size = 1
+batch_size = 4
 min_ndim = 2
-num_epochs = 1300
+num_epochs = 60
 
 
 #################################################
@@ -237,6 +224,10 @@ print(labels)
 # 加载训练数据和测试数据
 X_train, y_train = load_data(train_dir)
 X_test, y_test = load_data(test_dir)
+# X_train = tf.convert_to_tensor(X_trains, dtype=tf.float32)
+# X_test = tf.convert_to_tensor(X_tests, dtype=tf.float32)
+# y_test = tf.convert_to_tensor(y_tests, dtype=tf.float32)
+# y_train = tf.convert_to_tensor(y_trains, dtype=tf.float32)
 #############################
 # 将标签编码为整数
 unique_labels = np.unique(y_train)
@@ -249,6 +240,7 @@ num_classes = len(unique_labels)
 
 # 划分训练集和验证集
 X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
+
 # 创建模型
 input_shape = X_train[0].shape
 print('input_shape:', input_shape)
@@ -277,19 +269,39 @@ loss, accuracy = model.evaluate(X_test, y_test, batch_size=batch_size)
 # 进行预测
 y_pred = model.predict(X_test)
 y_pred_classes = np.argmax(y_pred, axis=1)
-# print('---------------------------------------------')
-# print('结果标签:',y_pred_classes)
-# cout=0
-# # print('------------------预测结果展示-------------------------')
-# for file_name in os.listdir(test_dir):
-#     # if file_name.endswith('.txt'):
-#     predicted_label = labels[int(y_pred_classes[cout])]
-#     file_name = file_name.split('_')[0]
-#     print('True Value:{}            Predict Value : {}'.format(file_name, predicted_label))
-#     cout+=1
+
 print('---------------------------------------------')
 print("Test Loss:", loss)
 print("Test Accuracy:", accuracy)
 
 cmap = "PuRd"
 pp_matrix_from_data(y_test, y_pred_classes, columns=labels, lw=accuracy, cmap=cmap)
+
+
+# 将预测结果划分为17个区间段并计算归一化分数
+num_intervals = 17
+intervals = np.linspace(299, 2000, num_intervals + 1)
+interval_scores = np.zeros(num_intervals)
+
+for i in range(num_intervals):
+    lower_bound = intervals[i]
+    upper_bound = intervals[i + 1]
+    indices = np.where((lower_bound <= y_test) & (y_test <= upper_bound))[0]
+
+    if len(indices) == 0:
+        interval_scores[i] = 0.0
+    else:
+        correct_predictions = np.sum(y_pred_classes[indices] == y_test[indices])
+        interval_accuracy = correct_predictions / len(indices)
+        interval_scores[i] = interval_accuracy
+
+# 归一化分数
+min_score = np.min(interval_scores)
+max_score = np.max(interval_scores)
+normalized_scores = (interval_scores - min_score) / (max_score - min_score)
+
+# 输出每个区间段的归一化分数
+for i in range(num_intervals):
+    lower_bound = intervals[i]
+    upper_bound = intervals[i + 1]
+    print(f"Interval [{lower_bound}-{upper_bound}]: Normalized Score = {normalized_scores[i]:.4f}")

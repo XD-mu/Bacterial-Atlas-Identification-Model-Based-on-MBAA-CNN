@@ -33,6 +33,16 @@ y_pred_classes=[7 ,7 ,7 ,7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 0, 0
  2 ,2 ,2 ,2 ,2, 2, 3, 3, 3, 3 ,4 ,3, 4 ,3, 4, 3, 3,4 ,3, 3, 3 ,3, 4, 3,4 ,3 ,4, 3, 4 ,3, 4 ,3 ,4 ,4 ,5, 4, 5,
  4 ,3 ,4, 6 ,4, 4, 4, 4, 4 ,5 ,4, 5, 5, 7 ,5 ,3, 6 ,4, 5,4 ,5, 3 ,3 ,5, 2 ,5 ,2, 5 ,5,6 ,6, 6,6 ,6 ,6 ,6, 6,
  6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9]
-cmap = "PuRd"
+# cmap = "PuRd"
+# cmap = "YlGnBu"
+# cmap = "twilight"
+cmap = "Blues"
+# cmap = "OrRd"
+# cmap = "RdPu"
+# cmap = "BuPu"
+# cmap = "GnBu"
+# cmap = "PuBu"
+# cmap = "BuGn"
+# cmap = "YlGn"
 pp_matrix_from_data(y_test, y_pred_classes,columns=labels,lw=accuracy,cmap=cmap)
 
