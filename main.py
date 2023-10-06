@@ -1,16 +1,8 @@
 import os
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.font_manager import FontProperties
-
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 from pylab import *
-import random
 import matplotlib
 import tensorflow as tf
-from keras.models import Sequential
-from keras.layers import Conv1D, MaxPooling1D, Flatten, Dense, Dropout, LSTM
-from keras.regularizers import l1, l2
-from keras.layers import BatchNormalization
 from keras.layers import *
 from tensorflow.keras.optimizers import Adagrad
 from keras.callbacks import ModelCheckpoint, EarlyStopping
@@ -19,12 +11,6 @@ from keras.models import load_model, Model, Sequential
 from tensorflow.keras import backend as K
 from keras.regularizers import l1, l2
 from pretty_confusion_matrix import pp_matrix_from_data
-from sklearn.metrics import roc_curve, auc
-from itertools import cycle
-from sklearn.utils import compute_sample_weight
-from tensorflow.keras.utils import to_categorical
-from keras.activations import softmax
-from sklearn.metrics import precision_recall_curve, average_precision_score
 
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
@@ -33,8 +19,8 @@ matplotlib.rcParams['axes.unicode_minus'] = False
 mpl.rcParams['font.sans-serif'] = ['SimHei']
 
 # 设置文件夹目录
-train_dir = './Final_Data/data2/train'  # 训练数据文件夹
-test_dir = './Final_Data/data2/test'  # 测试数据文件夹
+train_dir = './Final_Data/data1/train'  # 训练数据文件夹
+test_dir = './Final_Data/data1/test'  # 测试数据文件夹
 model_dir = './model'  # 模型保存文件夹
 
 # 自动获取所有的细菌标签
@@ -62,14 +48,12 @@ def save_plot(directory, filename):
         os.makedirs(directory)
     plt.savefig(os.path.join(directory, filename))
 
-
 ################################################
 # 超参数设置
 batch_size = 4
 min_ndim = 2
-num_epochs = 60
-
-
+num_epochs = 20
+max_length = 1500
 #################################################
 # 定义卷积神经网络模型函数,l1(0.01)和l2(0.01)分别表示L1和L2正则化项的权重，可以根据需要调整。这样定义的模型在训练过程中，损失函数会自动加入正则化项，从而惩罚模型的复杂度。
 def create_model(input_shape):
@@ -129,7 +113,6 @@ def create_model(input_shape):
         model.add(Dropout(0.1))  # 预防过拟合
         model.add(Dense(num_classes, activation='softmax'))
         return model
-
 
 # 加载训练数据函数
 def load_data(data_dir):
@@ -212,7 +195,6 @@ def plot_metrics(history, unique_labels):
     save_plot('img', 'recall.png')  # 保存图像
     plt.show()
 
-
 # 获取细菌标签
 for root, dirs, files in os.walk(origin_folder_path):
     for dir in dirs:
@@ -224,6 +206,9 @@ print(labels)
 # 加载训练数据和测试数据
 X_train, y_train = load_data(train_dir)
 X_test, y_test = load_data(test_dir)
+# 将序列数据填充到相同的长度
+X_train = pad_sequences(X_train, maxlen=max_length, padding='post', dtype='float32')
+X_test = pad_sequences(X_test, maxlen=max_length, padding='post', dtype='float32')
 # X_train = tf.convert_to_tensor(X_trains, dtype=tf.float32)
 # X_test = tf.convert_to_tensor(X_tests, dtype=tf.float32)
 # y_test = tf.convert_to_tensor(y_tests, dtype=tf.float32)
@@ -277,6 +262,7 @@ print("Test Accuracy:", accuracy)
 cmap = "PuRd"
 pp_matrix_from_data(y_test, y_pred_classes, columns=labels, lw=accuracy, cmap=cmap)
 
+print(f"y_test:{y_pred_classes}")
 
 # 将预测结果划分为17个区间段并计算归一化分数
 num_intervals = 17
@@ -286,14 +272,17 @@ interval_scores = np.zeros(num_intervals)
 for i in range(num_intervals):
     lower_bound = intervals[i]
     upper_bound = intervals[i + 1]
-    indices = np.where((lower_bound <= y_test) & (y_test <= upper_bound))[0]
+    indices = np.where((lower_bound <= y_pred) & (y_pred <= upper_bound))[0]
 
     if len(indices) == 0:
         interval_scores[i] = 0.0
     else:
         correct_predictions = np.sum(y_pred_classes[indices] == y_test[indices])
-        interval_accuracy = correct_predictions / len(indices)
-        interval_scores[i] = interval_accuracy
+        if correct_predictions > 0:
+            interval_accuracy = correct_predictions / len(indices)
+            interval_scores[i] = interval_accuracy
+        else:
+            interval_scores[i] = 0.0
 
 # 归一化分数
 min_score = np.min(interval_scores)
@@ -305,3 +294,4 @@ for i in range(num_intervals):
     lower_bound = intervals[i]
     upper_bound = intervals[i + 1]
     print(f"Interval [{lower_bound}-{upper_bound}]: Normalized Score = {normalized_scores[i]:.4f}")
+

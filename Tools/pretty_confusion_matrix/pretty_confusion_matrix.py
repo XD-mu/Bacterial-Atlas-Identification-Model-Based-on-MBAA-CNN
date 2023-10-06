@@ -152,6 +152,8 @@ def pp_matrix(
     figsize=[8, 8],
     show_null_values=0,
     pred_val_axis="y",
+    name="None",
+
 ):
     """
     print conf matrix with default layout (like matlab)
@@ -235,7 +237,9 @@ def pp_matrix(
         ax.text(item["x"], item["y"], item["text"], **item["kw"])
 
     # titles and legends
-    ax.set_title("Accuracy: {:.3f}".format(lw))
+    ax.set_title("{}  Accuracy: {:.3f}".format(name,lw))
+    # ax.set_title(name)
+    # ax.set_title(lw)
     ax.set_xlabel(xlbl)
     ax.set_ylabel(ylbl)
     plt.tight_layout()  # set layout slim
@@ -255,6 +259,7 @@ def pp_matrix_from_data(
     figsize=[8, 8],
     show_null_values=0,
     pred_val_axis="lin",
+    name="None",
     accuracy=0
 ):
     """
@@ -282,5 +287,6 @@ def pp_matrix_from_data(
         figsize=figsize,
         show_null_values=show_null_values,
         pred_val_axis=pred_val_axis,
-        lw=lw
+        lw=lw,
+        name=name
     )

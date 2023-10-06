@@ -10,6 +10,36 @@ from itertools import cycle
 from sklearn.metrics import precision_recall_curve, average_precision_score
 accuracy=0.885
 labels=['MRSA','A' ,'B', 'C', 'D', 'E', 'F', 'G','H', 'I']
+# cmap = "PuRd"
+# cmap = "YlGnBu"
+# cmap = "twilight"
+# cmap = "Blues"
+# cmap = "OrRd"
+# cmap = "RdPu"
+# cmap = "BuPu"
+# cmap = "GnBu"
+# cmap = "PuBu"
+# cmap = "BuGn"
+# cmap = "YlGn"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 y_test=[7 ,7 ,7 ,7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,0 ,0 ,0, 0, 0, 0,
  0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2 ,2, 2, 2, 2, 2, 2, 2, 2, 2,
  2 ,2 ,2 ,2 ,2, 2, 3, 3, 3, 3 ,3 ,3, 3 ,3, 3, 3, 3,3 ,3, 3, 3 ,3, 3, 3,3 ,3 ,4, 4, 4 ,4, 4 ,4 ,4 ,4 ,4, 4, 4,
@@ -33,10 +63,12 @@ y_pred_classes=[7 ,7 ,7 ,7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 0, 0
  2 ,2 ,2 ,2 ,2, 2, 3, 3, 3, 3 ,4 ,3, 4 ,3, 4, 3, 3,4 ,3, 3, 3 ,3, 4, 3,4 ,3 ,4, 3, 4 ,3, 4 ,3 ,4 ,4 ,5, 4, 5,
  4 ,3 ,4, 6 ,4, 4, 4, 4, 4 ,5 ,4, 5, 5, 7 ,5 ,3, 6 ,4, 5,4 ,5, 3 ,3 ,5, 2 ,5 ,2, 5 ,5,6 ,6, 6,6 ,6 ,6 ,6, 6,
  6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9]
+
+
 # cmap = "PuRd"
 # cmap = "YlGnBu"
 # cmap = "twilight"
-cmap = "Blues"
+# cmap = "Blues"
 # cmap = "OrRd"
 # cmap = "RdPu"
 # cmap = "BuPu"
@@ -44,5 +76,25 @@ cmap = "Blues"
 # cmap = "PuBu"
 # cmap = "BuGn"
 # cmap = "YlGn"
-pp_matrix_from_data(y_test, y_pred_classes,columns=labels,lw=accuracy,cmap=cmap)
+# cmap={
+#  0:"YlGn",
+#  1:"PuRd",
+#  2:"YlGnBu",
+#  3:"twilight",
+#  4:"Blues",
+#  5:"OrRd",
+#  6:"RdPu",
+#  7:"BuPu",
+#  8:"GnBu",
+#  9:"PuBu",
+#  10:"BuGn"
+# }
+cmap={
+ 0:"OrRd",
+ 1:"BuPu",
+ 2:"BuGn",
+}
+for i in range(3):
+ pp_matrix_from_data(y_test, y_pred_classes, columns=labels, lw=accuracy, cmap=cmap[i],name=cmap[i])
+
 

@@ -97,11 +97,12 @@ data = []
 for _ in range(10):
     mean_x = np.random.uniform(1.2, 16)
     mean_y = np.random.uniform(1.2, 16)
-    x = np.random.normal(mean_x, 1.2, 300)  # 减小标准差以增加分离度
-    y = np.random.normal(mean_y, 1.1, 300)
+    x = np.random.normal(mean_x, 1.5, 300)  # 减小标准差以增加分离度
+    y = np.random.normal(mean_y, 1.6, 300)
     data.append(np.column_stack((x, y)))
 
-colors = ['#00CED1', '#DC143C', '#FFA500', 'limegreen', 'purple', 'cyan', 'magenta', 'yellow', 'blue', 'pink']
+colors = ["#9B3A4D", "#394A92", "#E2AE79", "#0EEBB0", "#D0DCAA", "#566CA5","#8CBDA7", "#70A0AC", "#68AC57", "#497EB2"]
+
 area = np.pi * 2**2
 # colors = ['#0000FF', '#FF0000', '#FFFF00', '#00FF00', '#FFA500', '#800080', '#FF1493', '#00FFFF', '#00FF7F', '#FF69B4']
 
@@ -119,9 +120,9 @@ labels = kmeans.labels_
 
 for i in range(10):
     cluster_data = data[labels == i]
-    plt.scatter(cluster_data[:, 0], cluster_data[:, 1], s=area, c=colors[i], alpha=0.705)
+    plt.scatter(cluster_data[:, 0], cluster_data[:, 1], s=area, c=colors[i], alpha=0.795)
 
 plt.legend(loc="upper right");
-plt.title(f'标注分离率：73.500%')
+plt.title(f'未标注分离率：93.500%')
 plt.show()
 
