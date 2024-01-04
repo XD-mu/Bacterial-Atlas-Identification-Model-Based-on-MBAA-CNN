@@ -49,7 +49,7 @@
 
 ##### 2.训练LOSS值变化情况
 
-<img src="../../AppData/Roaming/Typora/typora-user-images/image-20240104192517814.png" style="zoom:67%;" />
+<img src="https://s2.loli.net/2024/01/04/GXWKuys8DNzIALM.png" style="zoom:67%;" />
 
 ##### 3.模型分别对于n种细菌数据各自分类情况
 
@@ -69,7 +69,7 @@
 
 ##### 5.模型对于测试集的验证情况
 
-<img src="./img/all_bacteria_heatmap.png" alt="all_bacteria_heatmap" style="zoom: 67%;" />
+<img src="https://s2.loli.net/2024/01/04/AiR4Hmg9Q1YnhZ5.png" alt="all_bacteria_heatmap" style="zoom: 67%;" />
 
 ##### 6.模型六种细菌的ROC变化情况
 
