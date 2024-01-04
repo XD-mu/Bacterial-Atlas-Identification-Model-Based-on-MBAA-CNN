@@ -1,27 +1,14 @@
 # 1.实现过程
 
-## 1.1模型选择
+## 1.1架构模型
 
-### 1.1.1基于注意力改进的卷积神经网络算法（AM-CNN）
+### 1.1.1基于多分支注意力改进的卷积神经网络算法（MBAA-CNN）
 
-​	AM-CNN（基于注意力改进的卷积神经网络）模型是一种用于处理细菌拉曼图谱数据的新型深度学习算法。该模型在输入数据特征组合时，考虑了细菌拉曼图谱的波长向量和强度向量，通过滑动窗口方式获取目标词与周围词的综合向量。首先，通过第一次的注意力机制捕获实体与序列中每个词的相关性，并将其与输入的综合词向量矩阵相乘。接着，对卷积结果使用第二次注意力机制捕获视窗与关系的相关性。最终，将卷积结果与相关性矩阵相乘，得到最后的输出结果。
+​		MBAA-CNN架构体系分为两个主要阶段：第一阶段涉及基于多分支注意力网络层以及非局部自适应空间分割策略，第二阶段则采用卷积神经网络（CNN）实现多层次的空间谱特征提取。图示展现了MBAA-CNN在拉曼光谱数据分类中的应用结构。在初步阶段，预处理的光谱数据借助峰值检测算法进行非局部自适应分割，以划分出三个独立的数据区段，为后续分析奠定基础。随后，在MBAA-CNN内嵌的多分支注意力网络层作用下，系统自适应调整每个区段数据的权重，并动态整合多分支特征，为CNN的多层输入做好准备。第二阶段中，初步处理的数据分别输入CNN各分支的浅层、中层和深层，并经过卷积、池化、Dropout等一系列操作，以提炼出综合的空间-光谱特征。此后，通过Softmax层的作用最大化不同层间的互补信息的利用。最后，主分类器利用提取的特征完成测试样本的拉曼光谱分类。
 
-​	（这个模型的核心在于将细菌拉曼图谱的波长向量和强度向量与输入数据进行组合。首先，将这两种向量进行拼接，构成了最初的输入向量。接着，使用滑动窗口的方式将目标词与周围词组合在一起，形成综合向量。第一次的注意力机制应用在实体与序列中每个词的相关性。将相关性矩阵与输入的综合词向量矩阵相乘，得到一个二维矩阵。然后，使用卷积提取特征，并对卷积结果使用第二次注意力机制捕获视窗与关系的相关性。最后，将卷积结果与相关性矩阵相乘，得到最终的输出结果。通过这种方式，模型能够充分考虑细菌拉曼图谱的波长向量和强度向量在输入数据中的关联关系。）
-
-<img src="./img/image-20230801094141414.png" alt="image-20230801094141414" style="zoom:50%;" />	
+![](https://s2.loli.net/2024/01/04/ZBG6MHalDo5pUnj.png)	
 
 ​																			模型结构
-
-网络构建：
-
-1. 输入层：将细菌拉曼图谱的波长向量和强度向量作为输入数据。波长向量和强度向量可以分别作为两个输入通道。
-2. 注意力机制1：使用注意力机制1捕获输入数据中实体与序列中每个词的相关性。可以采用自注意力（self-attention）机制或全局平均池化（global average pooling）等方式。
-3. 综合词向量矩阵：将注意力机制1得到的相关性矩阵与输入的综合词向量矩阵相乘，得到一个二维矩阵，用于提取特征。
-4. 卷积层：使用卷积层对综合词向量矩阵进行特征提取，可以使用不同的卷积核大小和数量，以捕获不同尺度的特征。
-5. 注意力机制2：使用注意力机制2对卷积结果进行进一步的特征选择，捕获视窗与关系的相关性。
-6. 全连接层：将经过注意力机制2的卷积结果展平，并通过全连接层进行特征融合和映射，得到最终的输出。
-7. 输出层：根据任务需求，可以添加合适的输出层，如softmax层用于分类任务，sigmoid层用于二分类任务等。
-8. 损失函数：选择合适的损失函数用于模型的训练和优化。
 
 ​	
 
@@ -30,14 +17,14 @@
 具体模型构架如下：	
 
 1. 我们首先将训练数据集按照4：1划分成训练集与验证集。
-2. 构建AM-CNN网络框架
-3. 将训练数据输入AM-CNN网络进行1000轮训练
+2. 构建MBAA-CNN网络框架
+3. 将训练数据输入MBAA-CNN网络进行10000轮训练
 4. 待模型训练好后，使用测试数据测试模型预测结果
 5. 调整模型参数，待模型结构最优后，测试模型最终的分类准确度，并记录训练期间 Loss 值的变动情况。
 
 
 
-## 1.2基于注意力改进的卷积神经网络（AM-CNN）实验结果
+## 1.2基于注意力改进的卷积神经网络（MBAA-CNN）实验结果
 
 训练结束后，本实验分别随机选取了3种细菌的50个拉曼数据进行模型评估。
 
@@ -47,7 +34,7 @@
 
 ##### 1.训练准确率变化情况
 
-<img src="./img/训练准确率+评估准确率.png" alt="训练准确率+评估准确率" style="zoom: 33%;" />
+<img src="https://s2.loli.net/2024/01/04/vVLM1F6b9u2y7li.png" style="zoom:67%;" />
 
 准确率变化较为理想，满足预期要求：
 
@@ -62,7 +49,7 @@
 
 ##### 2.训练LOSS值变化情况
 
-<img src="./img/1LOSS.png" alt="1LOSS" style="zoom: 67%;" />
+<img src="../../AppData/Roaming/Typora/typora-user-images/image-20240104192517814.png" style="zoom:67%;" />
 
 ##### 3.模型分别对于n种细菌数据各自分类情况
 
@@ -74,21 +61,21 @@
 
 **（1）.未标注**
 
-<img src="./img/FREE.png" alt="FREE" style="zoom: 50%;" />
+<img src="https://s2.loli.net/2024/01/04/eCnNmoRU6cQVF1A.png" style="zoom:67%;" />
 
 **（2）.标注**
 
-<img src="./img/LABEL.png" alt="LABEL" style="zoom: 50%;" />
+<img src="https://s2.loli.net/2024/01/04/6DOsFjiCPTaumoI.png" style="zoom:67%;" />
 
 ##### 5.模型对于测试集的验证情况
 
-<img src="./img/all_bacteria_heatmap.png" alt="all_bacteria_heatmap" style="zoom:72%;" />
+<img src="./img/all_bacteria_heatmap.png" alt="all_bacteria_heatmap" style="zoom: 67%;" />
 
 ##### 6.模型六种细菌的ROC变化情况
 
-<img src="./img/ROC.png" alt="ROC" style="zoom:150%;" />
+<img src="https://s2.loli.net/2024/01/04/376jQY45r9hOtem.png" style="zoom:67%;" />
 
-<img src="./img/PR.png" alt="PR" style="zoom:150%;" />
+<img src="https://s2.loli.net/2024/01/04/yWE2xT6fCgALRi5.png" style="zoom: 67%;" />
 
 ```
 	ROC曲线可以帮助我们了解分类器在不同阈值下的表现情况，以及在不同的分类阈值下分类器的敏感性和特异性。曲线的横坐标是假正率（False Positive Rate）即被错误地分为正类的样本占所有负样本的比例，曲线的纵坐标是真正率（True Positive Rate）即被正确地分为正类的样本占所有正样本的比例，曲线越接近左上角，说明分类器的表现越好。
@@ -98,57 +85,70 @@
 
 ### 1.2.3与经典网络相比的准确率提升程度
 
-![compare](./img/compare.png)
+![](https://s2.loli.net/2024/01/04/xlWHQi4wUv3M8bX.png)
 
-| Method | 未标注 | 标注  |
-| ------ | ------ | ----- |
-| ITQ    | 0.615  | 0.628 |
-| SH     | 0.684  | 0.744 |
-| DSH    | 0.765  | 0.780 |
-| SpH    | 0.795  | 0.815 |
-| BGAN   | 0.847  | 0.913 |
-| AM-CNN | 0.954  | 0.978 |
-
+| Method   | 未标注 | 标注   |
+| -------- | ------ | ------ |
+| SVM      | 0.6981 | 0.7020 |
+| RNN      | 0.8078 | 0.8104 |
+| KNN      | 0.8567 | 0.8574 |
+| CNN      | 0.9097 | 0.9187 |
+| MBAA-CNN | 0.9897 | 0.9949 |
 
 
-![performence](./img/performence.png)
+
+![](https://s2.loli.net/2024/01/04/XcWEgGSzbC2TmKJ.png)
 
 ## 2.创新点
 
 关于基于细菌拉曼光谱和注意力机制的CNN网络的创新性内容，具有以下几个主要优势：
 
-1.**引入注意力机制**：
+MBAA-CNN是一个基于多分支注意力机制的卷积神经网络，它通过各个分支上多尺度和多上下文注意网络层的搜索模块来优化特征抽取，从而提高了高精度光谱分类任务的准确度。与常规的CNN、SVM、RNN、KNN不同，MBAA-CNN通过多分支结构提供了多尺度特征抽取能力，能够捕捉光谱数据的不同尺度特征。
 
-传统的卷积神经网络在图像分类任务中，通常使用池化层、全局卷积核等方式提取图像特征。而引入了注意力机制之后，可以使网络更加关注细菌图像的重要特征，从而提高分类精度。
+RNN（循环神经网络）是专为处理时序数据设计的，其结构能够捕捉时间依赖性，但在处理长序列光谱时可能面临梯度消失或爆炸的问题**[7]-[8]**。
 
-注意力机制在网络中加入一个注意力模块，用于选择和强调输入光谱数据中的重要信息。在该网络中，注意力机制可以结合不同的损失函数进行优化，从而使网络更加有效地学习到重要特征，提高分类的效果。
+KNN（k-近邻算法）是一种基于实例的学习算法，由于它在分类和回归任务中方式过于简单，因此对于本实验过程中的拉曼光谱大数据集的处理效率与准确率较低**[9]**。
 
-2.**应用自适应阈值策略**：
+CNN（卷积神经网络）是一种深度学习算法，通常用于处理图像和视频数据。然而，在处理拉曼光谱大数据集时，CNN的效率与准确率可能相对较低。这是因为CNN通常依赖于局部特征的提取，而拉曼光谱数据通常具有高度复杂的频谱信息，这些信息在局部范围内可能不易捕获**[10]**。
 
-传统的细菌分类算法基于训练集的特征设定分类阈值，在测试集上运用时分类效果可能会有所下降。而基于细菌拉曼光谱和注意力机制的CNN网络，可以采用自适应阈值策略，实现对数据特征的自适应调整，避免了传统算法阈值设定不准确的问题。
+SVM（支持向量机）是一种强大的机器学习算法，通常用于分类和回归任务。然而，在处理拉曼光谱大数据集时，由于SVM的性能受到数据集的不平衡性的影响，SVM的表现没有MBAA-CNN优秀**[11]**。
 
-该网络中引入自适应阈值参数，在网络训练时动态更新自适应阈值**参数**，通过不断的反馈训练数据的特征，不断地调整自适应阈值参数，避免了传统算法阈值设定不准确的问题。
+MBAA-CNN模型方面主要贡献:
 
-3.**优化模型参数：**
-
-优化模型参数可以提高网络的训练速度和泛化能力，进而提高分类精度。在基于细菌拉曼光谱和注意力机制的CNN网络中，可以通过改变层数、添加跨层连接等方式优化模型的参数，提高分类的效果。
-
-我们的该网络可以通过增加网络层数，引入残差连接、shuffle连接等方式优化模型，增强网络的泛化能力。此外，还可以使用自适应学习率、正则化等技术，进一步优化网络参数。
-
-4.**数据来源新颖**：传统的基于图像的细菌分类方法需要基于显微镜下的图像进行分析和识别。而利用细菌拉曼光谱，则是通过非接触方式直接获取细菌组织的光谱数据，避免了细菌的处理过程对样本造成的影响和污染，同时提供了更加全局、多层次的细菌信息。
-
-5.**数据处理方式创新**：细菌拉曼光谱数据与图像数据不同，需要考虑光谱数据的高维度、数据噪声等问题。基于此，我们运用RamanSpectra库对数据进行预处理和降维，提取有用的特征信息，有利于构建更加高效的分类模型。
+- 将注意力机制引入到多分支网络结构中。同时，我们结合了非局部自适应空间窗口搜索的技术，以划分光谱特征段。
+- 将多头注意力机制引入到多尺度和多上下文注意网络层中，充分的学习了细菌光谱数据不同波段的特征；
 
 #### **参考：**
 
 ```
-1.王吉俐,彭敦陆,陈章,等. AM-CNN:一种基于注意力的卷积神经网络文本分类模型[J]. 小型微型计算机系统,2019,40(4):710-714. DOI:10.3969/j.issn.1000-1220.2019.04.004.
+[1] J. Feng et al., "Attention Multibranch Convolutional Neural Network for Hyperspectral Image Classification Based on Adaptive Region Search," in IEEE Transactions on Geoscience and Remote Sensing, vol. 59, no. 6, pp. 5054-5070, June 2021, doi: 10.1109/TGRS.2020.3011943.
 
+[2] Wang, Hongtao & Xu, Linfeng & Bezerianos, Anastasios & Chen, Chuangquan & Zhang, Zhiguo. (2020). Linking Attention-Based Multiscale CNN with Dynamical GCN for Driving Fatigue Detection. IEEE Transactions on Instrumentation and Measurement. 57. 1-1. 10.1109/TIM.2020.3047502. 
 
-2.Wang, Linlin, et al. "Relation classification via multi-level attention cnns." Proceedings of the 54th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers). 2016.
+[3] Xunli Fan, Shixi Shan, Xianjun Li, Jinhang Li, Jizong Mi, Jian Yang, Yongqin Zhang,
+Attention-modulated multi-branch convolutional neural networks for neonatal brain tissue segmentation,Computers in Biology and Medicine,Volume 146,2022,105522,ISSN 0010-4825,https://doi.org/10.1016/j.compbiomed.2022.105522.(这个论文没有下载入口，只参考了引言)
 
+[4] H. Zhang, Y . Li, Y . Zhang, and Q. Shen, “Spectral-spatial classification
+of hyperspectral imagery using a dual-channel convolutional neural
+network,” Remote Sens. Lett., vol. 8, no. 5, pp. 438–447, May 2017.
 
-3.OpenAI. "GPT-3: Language Models are Few-Shot Learners." May 2020. Version 3.0.
+[5] Y . Chen, H. Jiang, C. Li, X. Jia, and P. Ghamisi, “Deep feature extrac-
+tion and classification of hyperspectral images based on convolutional
+neural networks,” IEEE Trans. Geosci. Remote Sens., vol. 54, no. 10,
+pp. 6232–6251, Oct. 2016.
 
-4.https://mp.weixin.qq.com/s/N-lSzF72TooXAil5FUUW3w
+[6] Y . Xu, L. Zhang, B. Du, and F. Zhang, “Spectral–spatial unified networks
+for hyperspectral image classification,” IEEE Trans. Geosci. Remote
+Sens., vol. 56, no. 10, pp. 5893–5909, Oct. 2018.
+
+[7] Yin, Wenpeng, et al. "Comparative study of CNN and RNN for natural language processing." arXiv preprint arXiv:1702.01923 (2017).
+
+[8] Visin, Francesco, et al. "Renet: A recurrent neural network based alternative to convolutional networks." arXiv preprint arXiv:1505.00393 (2015).
+
+[9] Moldagulova, Aiman, and Rosnafisah Bte Sulaiman. "Using KNN algorithm for classification of textual documents." 2017 8th international conference on information technology (ICIT). IEEE, 2017.
+
+[10] Chauhan, Rahul, Kamal Kumar Ghanshala, and R. C. Joshi. "Convolutional neural network (CNN) for image detection and recognition." 2018 first international conference on secure cyber computing and communication (ICSCCC). IEEE, 2018.
+
+[11] Jakkula, Vikramaditya. "Tutorial on support vector machine (svm)." School of EECS, Washington State University 37.2.5 (2006): 3.
+
 ```
