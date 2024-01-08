@@ -71,7 +71,7 @@ Training accuracy represents the performance of the model on the current trainin
 
 ##### 5.Validation of the model on the test set
 
-<img src="https://s2.loli.net/2024/01/08/WtNP4idQgLkonYb.png" alt="all_bacteria_heatmap" style="zoom: 67%;" />
+<img src="https://s2.loli.net/2024/01/08/lsOQqBxgaNXdrhV.png" style="zoom: 67%;" />
 
 ##### 6.ROC changes of six types of bacteria in the model
 
