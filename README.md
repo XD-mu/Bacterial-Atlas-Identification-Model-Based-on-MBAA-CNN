@@ -89,13 +89,13 @@ For example, if the area under the ROC curve (AUC) is close to 1, it means that 
 
 ![](https://s2.loli.net/2024/01/08/VZyu3ijYpUPTe5I.png)
 
-| Method   | 未标注 | 标注   |
-| -------- | ------ | ------ |
-| SVM      | 0.6981 | 0.7020 |
-| RNN      | 0.8078 | 0.8104 |
-| KNN      | 0.8567 | 0.8574 |
-| CNN      | 0.9097 | 0.9187 |
-| MBAA-CNN | 0.9897 | 0.9909 |
+| Method   | UNLABEL | LABEL  |
+| -------- | ------- | ------ |
+| SVM      | 0.6981  | 0.7020 |
+| RNN      | 0.8078  | 0.8104 |
+| KNN      | 0.8567  | 0.8574 |
+| CNN      | 0.9097  | 0.9187 |
+| MBAA-CNN | 0.9897  | 0.9909 |
 
 
 
