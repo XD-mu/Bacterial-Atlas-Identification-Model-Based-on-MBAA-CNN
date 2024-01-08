@@ -26,15 +26,15 @@ from Function_part import *
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 # 设置文件夹目录
-train_dir = './Final_Data/train'  # 训练数据文件夹
-test_dir = './Final_Data/test'  # 测试数据文件夹
+train_dir = './Final_Data/data3/train'  # 训练数据文件夹
+test_dir = './Final_Data/data3/test'  # 测试数据文件夹
 model_dir = './model'  # 模型保存文件夹
-batch_size=16
+batch_size=8
 min_ndim=2
 max_length=1500
 #######################################
 # 自动获取所有的细菌标签
-origin_folder_path = './所有数据'
+origin_folder_path = './Origin_Data/data3/all'
 labels = []
 
 # 获取细菌标签
@@ -90,7 +90,7 @@ X_test = X_test.reshape(X_test.shape[0],1500,1)
 
 
 # 加载模型
-best_model_path = os.path.join(model_dir, 'best_model.h5')
+best_model_path = os.path.join(model_dir, '98.63%.h5')
 model = load_model(best_model_path,custom_objects={'MultiHeadSelfAttention':MultiHeadSelfAttention})
 
 # 进行预测

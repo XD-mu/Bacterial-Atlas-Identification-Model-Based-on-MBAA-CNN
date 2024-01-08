@@ -1,91 +1,93 @@
-# 1.实现过程
+[中文](./CN.md)  /  [English](./README.md)
 
-## 1.1架构模型
+# 1.Implementation process
 
-### 1.1.1基于多分支注意力改进的卷积神经网络算法（MBAA-CNN）
+## 1.1Architectural model
 
-​		MBAA-CNN架构体系分为两个主要阶段：第一阶段涉及基于多分支注意力网络层以及非局部自适应空间分割策略，第二阶段则采用卷积神经网络（CNN）实现多层次的空间谱特征提取。图示展现了MBAA-CNN在拉曼光谱数据分类中的应用结构。在初步阶段，预处理的光谱数据借助峰值检测算法进行非局部自适应分割，以划分出三个独立的数据区段，为后续分析奠定基础。随后，在MBAA-CNN内嵌的多分支注意力网络层作用下，系统自适应调整每个区段数据的权重，并动态整合多分支特征，为CNN的多层输入做好准备。第二阶段中，初步处理的数据分别输入CNN各分支的浅层、中层和深层，并经过卷积、池化、Dropout等一系列操作，以提炼出综合的空间-光谱特征。此后，通过Softmax层的作用最大化不同层间的互补信息的利用。最后，主分类器利用提取的特征完成测试样本的拉曼光谱分类。
+### 1.1.1Convolutional neural network algorithm based on multi-branch attention improvement (MBAA-CNN)
 
-![](https://s2.loli.net/2024/01/04/ZBG6MHalDo5pUnj.png)	
+​		The MBAA-CNN architecture system is divided into two main stages: the first stage involves multi-branch attention network layers and non-local adaptive spatial segmentation strategies, and the second stage uses convolutional neural networks (CNN) to achieve multi-level spatial spectrum. Feature extraction. The diagram shows the application structure of MBAA-CNN in Raman spectrum data classification. In the preliminary stage, the preprocessed spectral data are non-locally adaptive segmented with the help of a peak detection algorithm to divide three independent data sections to lay the foundation for subsequent analysis. Subsequently, under the action of the multi-branch attention network layer embedded in MBAA-CNN, the system adaptively adjusts the weight of each segment data and dynamically integrates multi-branch features to prepare for the multi-layer input of CNN. In the second stage, the preliminary processed data is input into the shallow, middle and deep layers of each branch of the CNN, and undergoes a series of operations such as convolution, pooling, and dropout to extract comprehensive spatial-spectral features. Thereafter, the use of complementary information between different layers is maximized through the function of the Softmax layer. Finally, the main classifier uses the extracted features to complete the Raman spectrum classification of the test sample.
+
+![](https://s2.loli.net/2024/01/08/VsJ8gCWvb4U9Rae.png)	
 
 ​																			模型结构
 
 ​	
 
-​	我们在训练网络时，为了使得模型可以更快更准确的训练，加入了学习率的自适应调整函数，可以根据训练的数据情况以及已有的训练量来自动调整学习率，使训练效果达到最优。
+1. When we train the network, in order to make the model train faster and more accurately, we add an adaptive adjustment function of the learning rate, which can automatically adjust the learning rate according to the training data and the existing training volume, so that the training effect can be achieved Optimal.
 
-具体模型构架如下：	
+   The specific model structure is as follows:
 
-1. 我们首先将训练数据集按照4：1划分成训练集与验证集。
-2. 构建MBAA-CNN网络框架
-3. 将训练数据输入MBAA-CNN网络进行10000轮训练
-4. 待模型训练好后，使用测试数据测试模型预测结果
-5. 调整模型参数，待模型结构最优后，测试模型最终的分类准确度，并记录训练期间 Loss 值的变动情况。
+   1. We first divide the training data set into a training set and a validation set according to 4:1.
+   2. Build MBAA-CNN network framework
+   3. Input the training data into the MBAA-CNN network for 10,000 rounds of training
+   4. After the model is trained, use the test data to test the model prediction results.
+   5. Adjust the model parameters. After the model structure is optimized, test the final classification accuracy of the model and record the changes in the Loss value during training.
 
 
 
-## 1.2基于注意力改进的卷积神经网络（MBAA-CNN）实验结果
+## 1.2 Experimental results of attention-based improved convolutional neural network (MBAA-CNN)
 
-训练结束后，本实验分别随机选取了3种细菌的50个拉曼数据进行模型评估。
+After training, this experiment randomly selected 50 Raman data of three types of bacteria for model evaluation.
 
-### 1.2.1未标注数据混合
+### 1.2.1Unlabeled data mixture
 
-### 1.2.2标注数据混合（6种细菌训练与分类效果）
+### 1.2.2Labeled data mixture (10 types of bacterial training and classification effects)
 
-##### 1.训练准确率变化情况
+##### 1.Changes in training accuracy
 
-<img src="https://s2.loli.net/2024/01/04/vVLM1F6b9u2y7li.png" style="zoom:67%;" />
+<img src="https://s2.loli.net/2024/01/08/OqRtmCT4leVPMUv.png" style="zoom:67%;" />
 
-准确率变化较为理想，满足预期要求：
+- The change in accuracy is ideal and meets the expected requirements:
 
-- 在第1500轮训练后模型的**训练准确率**维持在98%左右
-- 在第3400轮训练后模型的**验证准确率**维持在95%左右
+  - After the 1500th round of training, the **training accuracy** of the model remains at around 98%
+  - After the 3400th round of training, the **validation accuracy** of the model remains at around 95%
 
 ```
-	模型验证通常是在训练过程中使用一个独立于训练集和测试集的数据集进行模型性能评估。它可以用来检测模型是否过拟合或者欠拟合。如果模型在训练集上表现良好，但在验证集上表现较差，那就意味着模型可能过拟合了。这种情况下，可以采取一些方法如提前停止训练或增加正则化等来防止模型过拟合。
+Model validation usually uses a data set independent of the training set and test set to evaluate model performance during the training process. It can be used to detect whether the model is overfitting or underfitting. If the model performs well on the training set but performs poorly on the validation set, it means the model may be overfitting. In this case, some methods can be taken, such as stopping training early or adding regularization, to prevent the model from overfitting.
 
-	训练准确率代表模型在当前训练数据上的表现。训练多轮后，训练准确率会逐渐提高，这表明模型学到了更多的数据分类特征。但是，如果训练准确率开始变得非常高，而验证准确率却不再提高，这说明模型开始过拟合训练数据。
+Training accuracy represents the performance of the model on the current training data. After multiple rounds of training, the training accuracy will gradually increase, which indicates that the model has learned more data classification features. However, if the training accuracy starts to get very high, but the validation accuracy stops improving, this is a sign that the model is starting to overfit the training data.
 ```
 
-##### 2.训练LOSS值变化情况
+##### 2.Changes in training LOSS value
 
-<img src="https://s2.loli.net/2024/01/04/GXWKuys8DNzIALM.png" style="zoom:67%;" />
+<img src="https://s2.loli.net/2024/01/08/vpZ2zd5BibQtoCl.png" style="zoom:67%;" />
 
-##### 3.模型分别对于n种细菌数据各自分类情况
+##### 3.The model classifies n types of bacterial data respectively.
 
-<img src="./img/98.833%四种细菌分类情况Process.png" alt="98.833%四种细菌分类情况Process" style="zoom: 33%;" />
+<img src="https://s2.loli.net/2024/01/08/dIRhN5oP6bZfETX.png" alt="98.833%四种细菌分类情况Process" style="zoom: 33%;" />
 
-<img src="./img/98.75%分类情况process.png" alt="98.75%分类情况process" style="zoom: 40%;" />
+<img src="https://s2.loli.net/2024/01/08/ZHFSP61TyM2Ju3b.png" alt="98.75%分类情况process" style="zoom: 40%;" />
 
-##### 4.十种细菌同时分类情况
+##### 4.Simultaneous classification of ten kinds of bacteria
 
-**（1）.未标注**
+**（1）.UNLABEL**
 
 <img src="https://s2.loli.net/2024/01/04/eCnNmoRU6cQVF1A.png" style="zoom:67%;" />
 
-**（2）.标注**
+**（2）.LABEL**
 
-<img src="https://s2.loli.net/2024/01/04/6DOsFjiCPTaumoI.png" style="zoom:67%;" />
+<img src="https://s2.loli.net/2024/01/08/ZKR7JCEc5oVl9Xu.png" style="zoom:67%;" />
 
-##### 5.模型对于测试集的验证情况
+##### 5.Validation of the model on the test set
 
-<img src="https://s2.loli.net/2024/01/04/AiR4Hmg9Q1YnhZ5.png" alt="all_bacteria_heatmap" style="zoom: 67%;" />
+<img src="https://s2.loli.net/2024/01/08/WtNP4idQgLkonYb.png" alt="all_bacteria_heatmap" style="zoom: 67%;" />
 
-##### 6.模型六种细菌的ROC变化情况
+##### 6.ROC changes of six types of bacteria in the model
 
-<img src="https://s2.loli.net/2024/01/04/376jQY45r9hOtem.png" style="zoom:67%;" />
+<img src="https://s2.loli.net/2024/01/08/XdpoQ1k7H6Vc58u.png" style="zoom:67%;" />
 
-<img src="https://s2.loli.net/2024/01/04/yWE2xT6fCgALRi5.png" style="zoom: 67%;" />
+<img src="https://s2.loli.net/2024/01/08/5iNLowIE3prUZQv.png" style="zoom: 67%;" />
 
 ```
-	ROC曲线可以帮助我们了解分类器在不同阈值下的表现情况，以及在不同的分类阈值下分类器的敏感性和特异性。曲线的横坐标是假正率（False Positive Rate）即被错误地分为正类的样本占所有负样本的比例，曲线的纵坐标是真正率（True Positive Rate）即被正确地分为正类的样本占所有正样本的比例，曲线越接近左上角，说明分类器的表现越好。
-	通过ROC曲线我们可以判断分类器的性能是否足够好，同时也可以比较多个分类器的性能，选出最佳的分类器。
-	举个例子如果ROC曲线下的面积（AUC）接近于1，则说明分类器的性能较好，如果ROC曲线下的面积接近于0.5，则说明分类器的性能不如随机猜测（随机猜测的AUC为0.5）。
+The ROC curve can help us understand the performance of the classifier under different thresholds, as well as the sensitivity and specificity of the classifier under different classification thresholds. The abscissa of the curve is the False Positive Rate (False Positive Rate), which is the proportion of samples that are incorrectly classified as positive to all negative samples. The ordinate of the curve is the True Positive Rate (True Positive Rate), which is the proportion of samples that are incorrectly classified as positive. The proportion of samples to all positive samples. The closer the curve is to the upper left corner, the better the performance of the classifier.
+Through the ROC curve, we can judge whether the performance of the classifier is good enough. We can also compare the performance of multiple classifiers and select the best classifier.
+For example, if the area under the ROC curve (AUC) is close to 1, it means that the performance of the classifier is better. If the area under the ROC curve is close to 0.5, it means that the performance of the classifier is not as good as random guessing (the AUC of random guessing is 0.5).
 ```
 
-### 1.2.3与经典网络相比的准确率提升程度
+### 1.2.3Accuracy improvement compared to classic networks
 
-![](https://s2.loli.net/2024/01/04/xlWHQi4wUv3M8bX.png)
+![](https://s2.loli.net/2024/01/08/VZyu3ijYpUPTe5I.png)
 
 | Method   | 未标注 | 标注   |
 | -------- | ------ | ------ |
@@ -93,32 +95,27 @@
 | RNN      | 0.8078 | 0.8104 |
 | KNN      | 0.8567 | 0.8574 |
 | CNN      | 0.9097 | 0.9187 |
-| MBAA-CNN | 0.9897 | 0.9949 |
+| MBAA-CNN | 0.9897 | 0.9909 |
 
 
 
-![](https://s2.loli.net/2024/01/04/XcWEgGSzbC2TmKJ.png)
+![](https://s2.loli.net/2024/01/08/LwjB3JteIixdM8Y.png)
 
-## 2.创新点
+## 2. Deployment method suggestions
 
-关于基于细菌拉曼光谱和注意力机制的CNN网络的创新性内容，具有以下几个主要优势：
+- #### Provide preprocessed [Ten bacterial Raman spectrum test files](https://drive.google.com/file/d/1WeH_uRzx1HT1DCyYilERKbZkCHOnwRav/view?usp=drive_link) for testing, and our pretrained [Classification model ](https://drive.google.com/file/d/12Q4Vd-eN2-rNCBofm0dYQdozMhqTJg34/view?usp=drive_link). When using it, please extract the test file to the Final_Data folder and modify the file path in Model_Apply.py. For original data labels, you can set up a dictionary yourself, for example:
 
-MBAA-CNN是一个基于多分支注意力机制的卷积神经网络，它通过各个分支上多尺度和多上下文注意网络层的搜索模块来优化特征抽取，从而提高了高精度光谱分类任务的准确度。与常规的CNN、SVM、RNN、KNN不同，MBAA-CNN通过多分支结构提供了多尺度特征抽取能力，能够捕捉光谱数据的不同尺度特征。
+```
+['Cns', 'E. cloacae', 'E. coli', 'K. pneumoniae', 'MC', 'MRSA', 'MSSA', 'P. aeruginosa', 'P. vulgaris', 'S. epidermidi']
+```
 
-RNN（循环神经网络）是专为处理时序数据设计的，其结构能够捕捉时间依赖性，但在处理长序列光谱时可能面临梯度消失或爆炸的问题**[7]-[8]**。
+- It is recommended to use a Linux environment to create a virtual environment for training
 
-KNN（k-近邻算法）是一种基于实例的学习算法，由于它在分类和回归任务中方式过于简单，因此对于本实验过程中的拉曼光谱大数据集的处理效率与准确率较低**[9]**。
 
-CNN（卷积神经网络）是一种深度学习算法，通常用于处理图像和视频数据。然而，在处理拉曼光谱大数据集时，CNN的效率与准确率可能相对较低。这是因为CNN通常依赖于局部特征的提取，而拉曼光谱数据通常具有高度复杂的频谱信息，这些信息在局部范围内可能不易捕获**[10]**。
 
-SVM（支持向量机）是一种强大的机器学习算法，通常用于分类和回归任务。然而，在处理拉曼光谱大数据集时，由于SVM的性能受到数据集的不平衡性的影响，SVM的表现没有MBAA-CNN优秀**[11]**。
+**Please indicate the source for use!**
 
-MBAA-CNN模型方面主要贡献:
-
-- 将注意力机制引入到多分支网络结构中。同时，我们结合了非局部自适应空间窗口搜索的技术，以划分光谱特征段。
-- 将多头注意力机制引入到多尺度和多上下文注意网络层中，充分的学习了细菌光谱数据不同波段的特征；
-
-#### **参考：**
+#### **References:**
 
 ```
 [1] J. Feng et al., "Attention Multibranch Convolutional Neural Network for Hyperspectral Image Classification Based on Adaptive Region Search," in IEEE Transactions on Geoscience and Remote Sensing, vol. 59, no. 6, pp. 5054-5070, June 2021, doi: 10.1109/TGRS.2020.3011943.
@@ -152,3 +149,4 @@ Sens., vol. 56, no. 10, pp. 5893–5909, Oct. 2018.
 [11] Jakkula, Vikramaditya. "Tutorial on support vector machine (svm)." School of EECS, Washington State University 37.2.5 (2006): 3.
 
 ```
+

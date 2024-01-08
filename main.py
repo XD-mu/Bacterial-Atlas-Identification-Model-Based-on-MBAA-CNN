@@ -30,17 +30,17 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 loss_records = {}
 
 # 设置文件夹目录
-origin_folder_path = './Origin_Data'
-train_dir = './Final_Data/train'  # 训练数据文件夹
-test_dir = './Final_Data/test'  # 测试数据文件夹
+origin_folder_path = './Origin_Data/data3/all'
+train_dir = './Final_Data/data3/train'  # 训练数据文件夹
+test_dir = './Final_Data/data3/test'  # 测试数据文件夹
 model_dir = './model'  # 模型保存文件夹
 ################################################
 # 超参数设置
 TEST_MULTIPLE_LEARNING_RATES = False  # 将这个值设置为True以测试多个学习率
 learning_rate = 0.01  # 如果不测试多个学习率，使用这个确定的学习率
-batch_size = 8
+batch_size = 8 #8
 min_ndim = 2
-num_epochs = 2000
+num_epochs = 2500
 max_length = 1500
 #######################################
 X_train_full, y_train_full, y_test, X_train, X_val, X_test, y_train, y_val, num_classes, label_dict, labels, unique_labels = load_and_process_data(origin_folder_path, train_dir, test_dir, min_ndim, max_length)
@@ -60,5 +60,8 @@ if TEST_MULTIPLE_LEARNING_RATES:
     print(f"直接筛选得到的Best Learning Rate1: {best_lr}")
     test_learning_rates()
 else:  
-    model, history, test_loss, test_accuracy = Formal_Training_Function(input_shape, num_classes, model_dir, learning_rate, X_train_full, y_train_full, batch_size, num_epochs, X_val, y_val, X_test, y_test, labels, label_dict)
+    model, history, test_loss, test_accuracy = Formal_Training_Function(input_shape, num_classes, model_dir, learning_rate, X_train_full, y_train_full, batch_size, num_epochs, X_val, y_val, X_test, y_test, labels, label_dict, num_epochs)
+
+    
+os.system('shutdown -h now')
 
