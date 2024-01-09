@@ -6,88 +6,9 @@
 
 ### 1.1.1Convolutional neural network algorithm based on multi-branch attention improvement (MBAA-CNN)
 
-​		The MBAA-CNN architecture system is divided into two main stages: the first stage involves multi-branch attention network layers and non-local adaptive spatial segmentation strategies, and the second stage uses convolutional neural networks (CNN) to achieve multi-level spatial spectrum. Feature extraction. The diagram shows the application structure of MBAA-CNN in Raman spectrum data classification. In the preliminary stage, the preprocessed spectral data are non-locally adaptive segmented with the help of a peak detection algorithm to divide three independent data sections to lay the foundation for subsequent analysis. Subsequently, under the action of the multi-branch attention network layer embedded in MBAA-CNN, the system adaptively adjusts the weight of each segment data and dynamically integrates multi-branch features to prepare for the multi-layer input of CNN. In the second stage, the preliminary processed data is input into the shallow, middle and deep layers of each branch of the CNN, and undergoes a series of operations such as convolution, pooling, and dropout to extract comprehensive spatial-spectral features. Thereafter, the use of complementary information between different layers is maximized through the function of the Softmax layer. Finally, the main classifier uses the extracted features to complete the Raman spectrum classification of the test sample.
-
 <img src="https://s2.loli.net/2024/01/09/MzOkCBdHSRpAtIQ.png" style="zoom:67%;" />	
 
-​																
 
-​	
-
-1. When we train the network, in order to make the model train faster and more accurately, we add an adaptive adjustment function of the learning rate, which can automatically adjust the learning rate according to the training data and the existing training volume, so that the training effect can be achieved Optimal.
-
-   The specific model structure is as follows:
-
-   1. We first divide the training data set into a training set and a validation set according to 4:1.
-   2. Build MBAA-CNN network framework
-   3. Input the training data into the MBAA-CNN network for 10,000 rounds of training
-   4. After the model is trained, use the test data to test the model prediction results.
-   5. Adjust the model parameters. After the model structure is optimized, test the final classification accuracy of the model and record the changes in the Loss value during training.
-
-
-
-## 1.2 Experimental results of attention-based improved convolutional neural network (MBAA-CNN)
-
-After training, this experiment randomly selected 50 Raman data of three types of bacteria for model evaluation.
-
-### 1.2.1Unlabeled data mixture
-
-### 1.2.2Labeled data mixture (10 types of bacterial training and classification effects)
-
-##### 1.Changes in training accuracy
-
-<img src="https://s2.loli.net/2024/01/08/OqRtmCT4leVPMUv.png" style="zoom:67%;" />
-
-- The change in accuracy is ideal and meets the expected requirements:
-
-  - After the 1500th round of training, the **training accuracy** of the model remains at around 98%
-  - After the 3400th round of training, the **validation accuracy** of the model remains at around 95%
-
-```
-Model validation usually uses a data set independent of the training set and test set to evaluate model performance during the training process. It can be used to detect whether the model is overfitting or underfitting. If the model performs well on the training set but performs poorly on the validation set, it means the model may be overfitting. In this case, some methods can be taken, such as stopping training early or adding regularization, to prevent the model from overfitting.
-
-Training accuracy represents the performance of the model on the current training data. After multiple rounds of training, the training accuracy will gradually increase, which indicates that the model has learned more data classification features. However, if the training accuracy starts to get very high, but the validation accuracy stops improving, this is a sign that the model is starting to overfit the training data.
-```
-
-##### 2.Changes in training LOSS value
-
-<img src="https://s2.loli.net/2024/01/08/vpZ2zd5BibQtoCl.png" style="zoom:67%;" />
-
-##### 3.The model classifies n types of bacterial data respectively.
-
-<img src="https://s2.loli.net/2024/01/08/dIRhN5oP6bZfETX.png" alt="98.833%四种细菌分类情况Process" style="zoom: 33%;" />
-
-<img src="https://s2.loli.net/2024/01/08/ZHFSP61TyM2Ju3b.png" alt="98.75%分类情况process" style="zoom: 40%;" />
-
-##### 4.Simultaneous classification of ten kinds of bacteria
-
-**（1）.UNLABEL**
-
-<img src="https://s2.loli.net/2024/01/04/eCnNmoRU6cQVF1A.png" style="zoom:67%;" />
-
-**（2）.LABEL**
-
-<img src="https://s2.loli.net/2024/01/08/ZKR7JCEc5oVl9Xu.png" style="zoom:67%;" />
-
-##### 5.Validation of the model on the test set
-
-<img src="https://s2.loli.net/2024/01/08/lsOQqBxgaNXdrhV.png" style="zoom: 67%;" />
-
-##### 6.ROC changes of six types of bacteria in the model
-
-<img src="https://s2.loli.net/2024/01/08/XdpoQ1k7H6Vc58u.png" style="zoom:67%;" />
-
-<img src="https://s2.loli.net/2024/01/08/5iNLowIE3prUZQv.png" style="zoom: 67%;" />
-
-```
-The ROC curve can help us understand the performance of the classifier under different thresholds, as well as the sensitivity and specificity of the classifier under different classification thresholds. The abscissa of the curve is the False Positive Rate (False Positive Rate), which is the proportion of samples that are incorrectly classified as positive to all negative samples. The ordinate of the curve is the True Positive Rate (True Positive Rate), which is the proportion of samples that are incorrectly classified as positive. The proportion of samples to all positive samples. The closer the curve is to the upper left corner, the better the performance of the classifier.
-Through the ROC curve, we can judge whether the performance of the classifier is good enough. We can also compare the performance of multiple classifiers and select the best classifier.
-For example, if the area under the ROC curve (AUC) is close to 1, it means that the performance of the classifier is better. If the area under the ROC curve is close to 0.5, it means that the performance of the classifier is not as good as random guessing (the AUC of random guessing is 0.5).
-```
-
-### 1.2.3Accuracy improvement compared to classic networks
-
-![](https://s2.loli.net/2024/01/08/VZyu3ijYpUPTe5I.png)
 
 | Method   | UNLABEL | LABEL  |
 | -------- | ------- | ------ |
@@ -98,8 +19,6 @@ For example, if the area under the ROC curve (AUC) is close to 1, it means that 
 | MBAA-CNN | 0.9897  | 0.9909 |
 
 
-
-![](https://s2.loli.net/2024/01/08/LwjB3JteIixdM8Y.png)
 
 ## 2. Deployment method suggestions
 
