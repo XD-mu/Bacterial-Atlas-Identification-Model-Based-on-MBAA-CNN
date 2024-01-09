@@ -8,7 +8,7 @@
 
 ​		The MBAA-CNN architecture system is divided into two main stages: the first stage involves multi-branch attention network layers and non-local adaptive spatial segmentation strategies, and the second stage uses convolutional neural networks (CNN) to achieve multi-level spatial spectrum. Feature extraction. The diagram shows the application structure of MBAA-CNN in Raman spectrum data classification. In the preliminary stage, the preprocessed spectral data are non-locally adaptive segmented with the help of a peak detection algorithm to divide three independent data sections to lay the foundation for subsequent analysis. Subsequently, under the action of the multi-branch attention network layer embedded in MBAA-CNN, the system adaptively adjusts the weight of each segment data and dynamically integrates multi-branch features to prepare for the multi-layer input of CNN. In the second stage, the preliminary processed data is input into the shallow, middle and deep layers of each branch of the CNN, and undergoes a series of operations such as convolution, pooling, and dropout to extract comprehensive spatial-spectral features. Thereafter, the use of complementary information between different layers is maximized through the function of the Softmax layer. Finally, the main classifier uses the extracted features to complete the Raman spectrum classification of the test sample.
 
-![](https://s2.loli.net/2024/01/08/VsJ8gCWvb4U9Rae.png)	
+<img src="https://s2.loli.net/2024/01/09/MzOkCBdHSRpAtIQ.png" style="zoom:67%;" />	
 
 ​																
 
