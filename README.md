@@ -22,6 +22,20 @@
 
 ## 2. Deployment method suggestions
 
+- Training
+
+```python
+python main.py
+```
+
+- Deployment
+
+```python
+python Model_Apply.py
+```
+
+
+
 - #### Provide preprocessed [Ten bacterial Raman spectrum test files](https://drive.google.com/file/d/1WeH_uRzx1HT1DCyYilERKbZkCHOnwRav/view?usp=drive_link) for testing, and our pretrained [Classification model ](https://drive.google.com/file/d/12Q4Vd-eN2-rNCBofm0dYQdozMhqTJg34/view?usp=drive_link). When using it, please extract the test file to the Final_Data folder and modify the file path in Model_Apply.py. For original data labels, you can set up a dictionary yourself, for example:
 
 ```

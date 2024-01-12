@@ -16,6 +16,20 @@
 
 ## 2.部署方法建议
 
+- 训练
+
+```python
+python main.py
+```
+
+- 部署
+
+```python
+python Model_Apply.py
+```
+
+
+
 - #### 提供测试使用预处理后的[十种细菌拉曼光谱test文件](https://drive.google.com/file/d/1WeH_uRzx1HT1DCyYilERKbZkCHOnwRav/view?usp=drive_link)，以及我们预训练好的[分类模型](https://drive.google.com/file/d/12Q4Vd-eN2-rNCBofm0dYQdozMhqTJg34/view?usp=drive_link)。使用时，请将test文件解压到Final_Data文件夹中并在Model_Apply.py中修改文件路径。对于原数据标签可以自行设置字典添加，例如：
 
 ```
